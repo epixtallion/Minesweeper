@@ -1,32 +1,39 @@
-
-
 import de.bezier.guido.*;
 //Declare and initialize NUM_ROWS and NUM_COLS = 20
 private MSButton[][] buttons; //2d array of minesweeper buttons
-private ArrayList <MSButton> bombs; //ArrayList of just the minesweeper buttons that are mined
+private ArrayList <MSButton> bombs = new ArrayList<MSButton>(); //ArrayList of just the minesweeper buttons that are mined
+public static final int NUM_COLS = 20;
+public static final int NUM_ROWS = 20;
+public static final int MAX_BOMBS = 15;
 
 void setup ()
 {
-    size(400, 400);
+    size(500, 500);
     textAlign(CENTER,CENTER);
-    
+    background(255);
+
     // make the manager
     Interactive.make( this );
-    
+
     //your code to declare and initialize buttons goes here
-    
-    
-    
-    setBombs();
+    buttons = new MSButton[20][20];
+    for (int y = 0; y < 20; y++)
+      for (int x = 0; x < 20; x++)
+        buttons[y][x] = new MSButton(x, y);
+
+    for (int i = 0; i < MAX_BOMBS; i++) setBombs();
 }
 public void setBombs()
 {
-    //your code
+  int x = (int) (Math.random()*20);
+  int y = (int) (Math.random()*20);
+  if (!(bombs.contains(buttons[x][y]))) bombs.add(buttons[x][y]);
+  else setBombs();
 }
 
 public void draw ()
 {
-    background( 0 );
+    background(128);
     if(isWon())
         displayWinningMessage();
 }
@@ -50,13 +57,13 @@ public class MSButton
     private float x,y, width, height;
     private boolean clicked, marked;
     private String label;
-    
+
     public MSButton ( int rr, int cc )
     {
-        // width = 400/NUM_COLS;
-        // height = 400/NUM_ROWS;
+        width = 500/NUM_COLS;
+        height = 500/NUM_ROWS;
         r = rr;
-        c = cc; 
+        c = cc;
         x = c*width;
         y = r*height;
         label = "";
@@ -72,22 +79,22 @@ public class MSButton
         return clicked;
     }
     // called by manager
-    
-    public void mousePressed () 
+
+    public void mousePressed ()
     {
         clicked = true;
         //your code here
     }
 
-    public void draw () 
-    {    
+    public void draw ()
+    {
         if (marked)
             fill(0);
-        // else if( clicked && bombs.contains(this) ) 
-        //     fill(255,0,0);
+        else if( clicked && bombs.contains(this) )
+            fill(255,0,0);
         else if(clicked)
             fill( 200 );
-        else 
+        else
             fill( 100 );
 
         rect(x, y, width, height);
@@ -110,6 +117,3 @@ public class MSButton
         return numBombs;
     }
 }
-
-
-
